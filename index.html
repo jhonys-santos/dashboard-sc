@@ -208,14 +208,14 @@ setInterval(()=>{ document.getElementById('clock').textContent=new Date().toLoca
 document.getElementById('clock').textContent=new Date().toLocaleTimeString('pt-BR');
 
 // ── CONFIG
-const SHEET_ID='1cs6iIuNvRs_ok7WYWmabKoHVxYGzIiHM4sEo4iar_A4';
 const REFRESH_INTERVAL=300000;
 
-const SHEETS={atd:'ATENDIMENTO',rsl:'RESOLUÇÃO',kpis:'KPIs GERAIS',agenda:'AGENDA E FOCO'};
-
-function sheetURL(name){
-  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(name)}`;
-}
+const SHEET_URLS = {
+  atd:    'https://docs.google.com/spreadsheets/d/e/2PACX-1vT2VvHiU5wcCkuKL4ns_e2XBJEZHrsSTIIv_aDTUIL6pBHioy3lfYvKlukw3Kblj0aEJr5_YJCHVjgT/pub?gid=0&single=true&output=csv',
+  rsl:    'https://docs.google.com/spreadsheets/d/e/2PACX-1vT2VvHiU5wcCkuKL4ns_e2XBJEZHrsSTIIv_aDTUIL6pBHioy3lfYvKlukw3Kblj0aEJr5_YJCHVjgT/pub?gid=1821763242&single=true&output=csv',
+  kpis:   'https://docs.google.com/spreadsheets/d/e/2PACX-1vT2VvHiU5wcCkuKL4ns_e2XBJEZHrsSTIIv_aDTUIL6pBHioy3lfYvKlukw3Kblj0aEJr5_YJCHVjgT/pub?gid=1654495771&single=true&output=csv',
+  agenda: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT2VvHiU5wcCkuKL4ns_e2XBJEZHrsSTIIv_aDTUIL6pBHioy3lfYvKlukw3Kblj0aEJr5_YJCHVjgT/pub?gid=1034539582&single=true&output=csv',
+};
 
 // ── UTILS
 function timeStrToMin(s){
@@ -363,8 +363,8 @@ function parseAgenda(rows){
 }
 
 // ── FETCH
-async function fetchSheet(name){
-  const url=sheetURL(name);
+async function fetchSheet(key){
+  const url=SHEET_URLS[key];
   const proxy=`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
   const resp=await fetch(proxy);
   const json=await resp.json();
@@ -376,8 +376,8 @@ async function loadAllData(){
   ind.textContent='● atualizando...';ind.classList.add('loading');
   try{
     const [rowsATD,rowsRSL,rowsKPI,rowsAG]=await Promise.all([
-      fetchSheet(SHEETS.atd),fetchSheet(SHEETS.rsl),
-      fetchSheet(SHEETS.kpis),fetchSheet(SHEETS.agenda),
+      fetchSheet('atd'),fetchSheet('rsl'),
+      fetchSheet('kpis'),fetchSheet('agenda'),
     ]);
     parseATD(rowsATD);parseRSL(rowsRSL);parseKPIs(rowsKPI);parseAgenda(rowsAG);
     renderAll();
