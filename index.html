@@ -226,6 +226,10 @@
   </div>
 </div>
 
+<audio id="manifesto-audio" loop>
+  <source src="manifesto.mp3" type="audio/mpeg">
+</audio>
+
 <div id="manifesto-overlay">
   <div class="manifesto-card">
     <span class="manifesto-icon">📣</span>
@@ -783,15 +787,22 @@ function renderAll(){
     document.getElementById('m-bar').style.width = '100%';
     var overlay = document.getElementById('manifesto-overlay');
     overlay.classList.add('show');
+    // Tocar música
+    var audio = document.getElementById('manifesto-audio');
+    if(audio){ audio.currentTime=0; audio.volume=0.8; audio.play().catch(function(){}); }
     var remaining = ALERT_DURATION;
     document.getElementById('m-countdown').textContent = 'fechando em '+remaining+'s';
     var timer = setInterval(function(){
       remaining--;
       document.getElementById('m-countdown').textContent = 'fechando em '+remaining+'s';
       document.getElementById('m-bar').style.width = ((remaining/ALERT_DURATION)*100)+'%';
-      if(remaining<=0){ clearInterval(timer); overlay.classList.remove('show'); }
+      if(remaining<=0){ clearInterval(timer); overlay.classList.remove('show');
+        var audio=document.getElementById('manifesto-audio'); if(audio){audio.pause();audio.currentTime=0;} }
     },1000);
-    overlay.onclick = function(){ clearInterval(timer); overlay.classList.remove('show'); };
+    overlay.onclick = function(){
+      clearInterval(timer); overlay.classList.remove('show');
+      var audio=document.getElementById('manifesto-audio'); if(audio){audio.pause();audio.currentTime=0;}
+    };
   }
 
   setInterval(checkManifesto, 30000);
