@@ -796,6 +796,18 @@ function renderAll(){
 
   setInterval(checkManifesto, 30000);
   window.addEventListener('dataLoaded', checkManifesto);
+
+  // Expor globalmente para teste via console ou tecla T
+  window.showAlert = showAlert;
+
+  // Tecla T = teste do alerta
+  document.addEventListener('keydown', function(e){
+    if(e.key==='t'||e.key==='T'){
+      var nomes = ['Iasmin','Francis','Nathalia','Gabrielle','Daniel'];
+      var nome = nomes[Math.floor(Math.random()*nomes.length)];
+      showAlert(nome, '17:45');
+    }
+  });
 })();
 
 // ── INIT
